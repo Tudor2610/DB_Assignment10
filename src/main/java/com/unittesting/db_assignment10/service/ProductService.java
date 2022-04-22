@@ -9,11 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ProductService {
     @Autowired
     ProductRepository productRepository;
@@ -22,8 +24,13 @@ public class ProductService {
     @Autowired
     UserRepository userRepository;
 
-    public Product addProduct(Product product, Integer id) {
+    public Product addProductToCart(Product product, Integer id) {
         cartRepository.getById(id).getProductList().add(product);
+        return productRepository.save(product);
+    }
+
+    public Product addProductToWishlist(Product product, Integer id) {
+        userRepository.getById(id).getWishlist().getProductList().add(product);
         return productRepository.save(product);
     }
 
